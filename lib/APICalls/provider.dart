@@ -27,7 +27,7 @@ class APICallsProvider extends ChangeNotifier{
    getCategories() async{
     final response = await http.get(Uri.parse(categoriesRoot));
     if(response.statusCode==200){
-      print(response.body);
+
       Map<String,dynamic> list=json.decode(response.body);
       //return list['jobs'];
       List<Categories> categories=[];
