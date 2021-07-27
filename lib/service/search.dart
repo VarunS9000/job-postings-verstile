@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:verstile_assignment/APICalls/provider.dart';
 
 class SearchJobs extends SearchDelegate{
-  List<Job> jobs;
+  dynamic jobs;
   String camelCase(String text) {
     if (text.length > 0) {
       return text[0].toUpperCase() + text.substring(1);
@@ -46,8 +46,8 @@ class SearchJobs extends SearchDelegate{
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<Job> filteredList= jobs.where(
-            (element) => element.title.contains(camelCase(query.trim())))
+    dynamic filteredList= jobs.where(
+            (element) => element.title.contains(camelCase(query.trim()))?true:false)
         .toList();
     return Container(
 
@@ -62,6 +62,7 @@ class SearchJobs extends SearchDelegate{
           ),
           SizedBox(height: 5,),
           Text('Tap on the card to get a detail description of the role'),
+          SizedBox(height: 10,),
           Expanded(
               child: ListView.builder(
                   itemCount: filteredList.length,

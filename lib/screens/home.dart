@@ -12,6 +12,7 @@ class _HomeState extends State<Home> {
   dynamic dataList;
   int currentIndex=0;
   dynamic listForSearchClass=[];
+  bool noListing=false;
   getJobs(BuildContext context,list,index){
     Provider.of<APICallsProvider>(context,listen: true).getJobs(list, index);
   }
@@ -97,67 +98,109 @@ class _HomeState extends State<Home> {
                       ),
                       SizedBox(height: 5,),
                       Text('Tap on the card to get a detail description of the role'),
+                      SizedBox(height: 10,),
+
+
 
                       Expanded(child:FutureBuilder(
                           future: Provider.of<APICallsProvider>(context).getJobs(dataList, currentIndex),
                           builder: (context,AsyncSnapshot<dynamic> snapShot){
 
-                            if(snapShot.hasData && (snapShot.data[0].category==dataList[currentIndex].name)){
-                             listForSearchClass=snapShot.data;
+                            try{
+                              if(snapShot.hasData && (snapShot.data[0].category==dataList[currentIndex].name)){
+                                listForSearchClass=snapShot.data;
 
-                              return ListView.builder(
-                                  itemCount: snapShot.data.length,
-                                  itemBuilder: (context,index){
-                                    return GestureDetector(
-                                      onTap: (){
-                                        Navigator.pushNamed(context, '/details',arguments: {
-                                          'name':snapShot.data[index].companyName,
-                                          'details':snapShot.data[index].description
-                                        });
-                                      },
-                                      child: Card(
-                                          margin:EdgeInsets.all(20),
-                                          shape:RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(15.0)
-                                          ),
-                                          shadowColor: Colors.blueGrey,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(20),
-                                            child: Column(
-                                              children: [
-                                                Center(
-                                                  child:Text(
-                                                      snapShot.data[index].title,
-                                                      style:TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20.0,
 
-                                                      )
-                                                  ),
-                                                ),
 
-                                                SizedBox(height: 5,),
-                                                Text('Company name : ${snapShot.data[index].companyName}'),
-                                                SizedBox(height: 5,),
-                                                Text('Job Type : ${snapShot.data[index].type}'),
-                                                SizedBox(height: 5,),
-                                                Text('Location : ${snapShot.data[index].location}'),
-                                                SizedBox(height: 5,),
-                                                Text('Salary : ${snapShot.data[index].salary==""?'Not mentioned':snapShot.data[index].salary}')
-
-                                              ],
+                                return ListView.builder(
+                                    itemCount: snapShot.data.length,
+                                    itemBuilder: (context,index){
+                                      return GestureDetector(
+                                        onTap: (){
+                                          Navigator.pushNamed(context, '/details',arguments: {
+                                            'name':snapShot.data[index].companyName,
+                                            'details':snapShot.data[index].description
+                                          });
+                                        },
+                                        child: Card(
+                                            margin:EdgeInsets.all(20),
+                                            shape:RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15.0)
                                             ),
-                                          )
-                                      ),
-                                    );
-                                  }
-                              );
+                                            shadowColor: Colors.blueGrey,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(20),
+                                              child: Column(
+                                                children: [
+                                                  Center(
+                                                    child:Text(
+                                                        snapShot.data[index].title,
+                                                        style:TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 20.0,
+
+                                                        )
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(height: 5,),
+                                                  Text('Company name : ${snapShot.data[index].companyName}'),
+                                                  SizedBox(height: 5,),
+                                                  Text('Job Type : ${snapShot.data[index].type}'),
+                                                  SizedBox(height: 5,),
+                                                  Text('Location : ${snapShot.data[index].location}'),
+                                                  SizedBox(height: 5,),
+                                                  Text('Salary : ${snapShot.data[index].salary==""?'Not mentioned':snapShot.data[index].salary}')
+
+                                                ],
+                                              ),
+                                            )
+                                        ),
+                                      );
+                                    }
+                                );
 
 
 
 
+
+                              }
+
+
+
+
+                              }
+
+                            catch(e){
+                              if(snapShot.data.length==0){
+                                snapShot.data.add('dummy');
+                                return Card(
+                                  margin:EdgeInsets.all(20),
+                                  shape:RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0)
+                                  ),
+                                  child: Center(
+                                    child: Text('Selected job has no posting'),
+                                  ),
+                                );
+                              }
+                              else if(snapShot.data=='Error'){
+                                return Card(
+                                  margin:EdgeInsets.all(20),
+                                  shape:RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0)
+                                  ),
+                                  child: Center(
+                                    child: Text('Something went wrong'),
+                                  ),
+                                );
+                              }
 
                             }
+
+
+
+
 
 
                             return Card(
@@ -173,6 +216,7 @@ class _HomeState extends State<Home> {
                           }
                       )
                       )
+
 
 
 

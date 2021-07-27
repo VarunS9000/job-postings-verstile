@@ -8,7 +8,7 @@ class APICallsProvider extends ChangeNotifier{
   dynamic categoriesList=[];
   dynamic jobsList=[] ;
   int currentIndex=0;
-  dynamic searchList=[];
+
 
   get listOfCategories{
     return categoriesList;
@@ -22,9 +22,7 @@ class APICallsProvider extends ChangeNotifier{
     return currentIndex;
   }
 
-  get listForSearch{
-    return searchList;
-  }
+
 
    getCategories() async{
     final response = await http.get(Uri.parse(categoriesRoot));
@@ -51,17 +49,18 @@ class APICallsProvider extends ChangeNotifier{
     final response = await http.get(Uri.parse(jobsRoot+list[index].slug));
     if(response.statusCode==200){
       Map<String,dynamic> list=json.decode(response.body);
-      List<Job> objectList=[];
+      dynamic objectList=[];
 
       list['jobs'].forEach((element)=>{
 
         objectList.add(Job(id: element['id'], url: element['url'], title: element['title'], companyName: element['company_name'], category: element['category'], type: element['job_type'], date: element['publication_date'], location: element['candidate_required_location'], salary: element['salary'], description: element['description']))
       });
       jobsList= objectList;
+
       return jobsList;
     }
 
-    return [];
+    return 'Error';
   }
 
   getCurrentIndex(index){
@@ -69,10 +68,7 @@ class APICallsProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  checkList(list){
-    searchList=list;
-    notifyListeners();
-  }
+
 
 }
 
